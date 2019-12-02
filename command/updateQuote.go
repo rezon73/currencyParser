@@ -3,9 +3,9 @@ package command
 import (
 	"currencyParser/entity"
 	"currencyParser/service/config"
+	"currencyParser/service/exchange"
 	"currencyParser/service/mainDatabase"
 	"currencyParser/service/quoteUpdater"
-	"currencyParser/service/quoteUpdater/exchange"
 	"flag"
 	"github.com/jinzhu/gorm"
 	"log"

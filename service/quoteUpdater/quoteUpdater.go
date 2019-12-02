@@ -3,8 +3,8 @@ package quoteUpdater
 import (
 	"currencyParser/entity"
 	"currencyParser/service/config"
+	"currencyParser/service/exchange"
 	"currencyParser/service/mainDatabase"
-	"currencyParser/service/quoteUpdater/exchange"
 	"github.com/jinzhu/gorm"
 )
 

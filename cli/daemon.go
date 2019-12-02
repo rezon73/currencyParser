@@ -16,6 +16,10 @@ import (
 func main() {
 	defer mainDatabase.Close()
 
+	if len(os.Args) <= 1 {
+		panic("set command name")
+	}
+
 	commandName := os.Args[1]
 	if commandName == "" {
 		panic("set command name")
