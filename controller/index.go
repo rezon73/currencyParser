@@ -5,12 +5,13 @@ import (
 	"currencyParser/service/mainDatabase"
 	"encoding/json"
 	"net/http"
+	"strings"
 )
 
 type IndexController struct {}
 
 func (controller IndexController) GetQuoteHandler(writer http.ResponseWriter, request *http.Request) {
-	symbolNames := request.FormValue("symbols")
+	symbolNames := strings.Split(request.FormValue("symbols"), ",")
 
 	var symbols []entity.Symbol
 	var actualQuote entity.ActualQuote
