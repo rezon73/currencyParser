@@ -4,7 +4,7 @@
 ## Использование
 Запуск команды обновления котировок
 
-    ./cron updateQuote -exchange=2 -symbols="BTCUSD,ETHUSD" -interval=2
+    ./daemon updateQuote -exchange=2 -symbols="BTCUSD,ETHUSD" -interval=2
 `interval`: как часто обновлять котировки
 
 `exchange`: binance id = 1, exmo id = 2  // впоследствии можно сделать подобие enum
