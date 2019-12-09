@@ -2,6 +2,7 @@ package main
 
 import (
 	"currencyParser/controller"
+	"currencyParser/service/logService"
 	"currencyParser/service/mainDatabase"
 	"log"
 	"net/http"
@@ -16,6 +17,8 @@ var server   *http.Server
 
 func main() {
 	defer mainDatabase.Close()
+
+	logService.SetJobName("api")
 
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
@@ -46,7 +49,7 @@ func main() {
 
 	err := server.ListenAndServe()
 	if err != nil {
-		panic(err)
+		logService.Fatal(err)
 	}
 
 	routines.Wait()

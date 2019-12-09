@@ -4,11 +4,11 @@ import (
 	"currencyParser/cache"
 	"currencyParser/entity"
 	"currencyParser/service/config"
+	"currencyParser/service/logService"
 	"encoding/json"
 	"errors"
 	"github.com/jinzhu/gorm"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 )
@@ -41,7 +41,7 @@ func (exchange ExmoExchange) GetExchangePrice(symbol string) (float64, error) {
 
 		cacheErr = cache.Set(cacheKey, body, 5)
 		if cacheErr != nil {
-			log.Println(cacheErr)
+			logService.Warn(cacheErr)
 		}
 	}
 
@@ -50,7 +50,7 @@ func (exchange ExmoExchange) GetExchangePrice(symbol string) (float64, error) {
 	err := json.Unmarshal(body, &response)
 	if err == nil {
 		if _, isExist := response[symbol]; !isExist {
-			err = errors.New("Invalid symbol")
+			err = errors.New("Invalid symbol " + symbol)
 		}
 	}
 

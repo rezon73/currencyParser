@@ -3,19 +3,21 @@ package main
 import (
 	"currencyParser/command"
 	"currencyParser/service/config"
+	"currencyParser/service/logService"
 	"currencyParser/service/mainDatabase"
 	"os"
+	"strings"
 )
 
 func main() {
 	defer mainDatabase.Close()
 
-	args := os.Args[1:]
-	if len(args) == 0 {
-		panic("set command name")
+	commandName := os.Args[1]
+	if commandName == "" {
+		logService.Fatal("set command name")
 	}
 
-	commandName := args[0]
+	logService.SetJobName("cron-" + strings.ReplaceAll(strings.Join(os.Args[1:], "_"), "-", ""))
 
 	command.ArgumentUtil{}.ExceptArgument(&os.Args, 1)
 
@@ -26,6 +28,6 @@ func main() {
 	}.CreateCommand().Exec()
 
 	if err != nil {
-		panic(err)
+		logService.Error(err)
 	}
 }

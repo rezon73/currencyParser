@@ -2,6 +2,7 @@ package command
 
 import (
 	"currencyParser/service/config"
+	"currencyParser/service/logService"
 	"github.com/jinzhu/gorm"
 )
 
@@ -19,6 +20,7 @@ func (factory Factory) CreateCommand() Command {
 				MainDatabase: factory.MainDatabase,
 			}
 		default:
-			panic("Factory: set correct command")
+			logService.Fatal("Factory: set correct command")
+			return nil
 	}
 }

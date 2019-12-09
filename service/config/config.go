@@ -8,9 +8,11 @@ import (
 
 type Config struct {
 	MainDatabase config.MainDatabase
+	Cache        config.Cache
+	Log          config.Log
+	Telegram     config.Telegram
 	Binance      config.Binance
 	Exmo         config.Exmo
-	Cache        config.Cache
 	isInited     bool
 }
 
@@ -39,6 +41,16 @@ func (config *Config) init() error {
 	}
 
 	err = envconfig.Init(&config.Cache)
+	if err != nil {
+		return err
+	}
+
+	err = envconfig.Init(&config.Log)
+	if err != nil {
+		return err
+	}
+
+	err = envconfig.Init(&config.Telegram)
 	if err != nil {
 		return err
 	}

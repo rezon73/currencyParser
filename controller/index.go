@@ -2,6 +2,7 @@ package controller
 
 import (
 	"currencyParser/entity"
+	"currencyParser/service/logService"
 	"currencyParser/service/mainDatabase"
 	"encoding/json"
 	"net/http"
@@ -27,7 +28,10 @@ func (controller IndexController) GetQuoteHandler(writer http.ResponseWriter, re
 		prices[symbol.Name] = actualQuote.Price
 	}
 
-	bytes, _ := json.Marshal(prices)
+	bytes, err := json.Marshal(prices)
+	if err != nil {
+		logService.Error(err)
+	}
 
 	writer.Header().Set("Content-Type", "application/json")
 	writer.WriteHeader(http.StatusOK)
@@ -43,7 +47,10 @@ func (controller IndexController) GetSymbolsHandler(writer http.ResponseWriter, 
 		symbolNames = append(symbolNames, symbol.Name)
 	}
 
-	bytes, _ := json.Marshal(symbolNames)
+	bytes, err := json.Marshal(symbolNames)
+	if err != nil {
+		logService.Error(err)
+	}
 
 	writer.Header().Set("Content-Type", "application/json")
 	writer.WriteHeader(http.StatusOK)

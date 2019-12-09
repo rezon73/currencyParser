@@ -4,6 +4,7 @@ import (
 	"currencyParser/entity"
 	"currencyParser/service/config"
 	"currencyParser/service/exchange"
+	"currencyParser/service/logService"
 	"currencyParser/service/mainDatabase"
 	"currencyParser/service/quoteUpdater"
 	"flag"
@@ -35,7 +36,7 @@ func (command UpdateQuote) Exec() error {
 	}
 
 	if updateQuoteExchangeId == 0 {
-		panic("UpdateQuote: set exchange [-exchange=...]")
+		logService.Fatal("UpdateQuote: set exchange [-exchange=...]")
 	}
 
 	var symbols []entity.Symbol
@@ -82,6 +83,7 @@ func (command UpdateQuote) spawnExchange(exchangeId int) exchange.Exchange {
 				MainDatabase: command.MainDatabase,
 			}
 		default:
-			panic("Set correct exchange ID")
+			logService.Fatal("Set correct exchange ID")
+			return nil
 	}
 }
