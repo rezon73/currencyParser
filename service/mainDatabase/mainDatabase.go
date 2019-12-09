@@ -2,6 +2,7 @@ package mainDatabase
 
 import (
 	"currencyParser/service/config"
+	"currencyParser/service/logService"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
@@ -15,7 +16,7 @@ func init() {
 func InitInstance(instanceId int, dsn string) {
 	db, err := gorm.Open("mysql", dsn)
 	if err != nil {
-		panic("failed to connect database")
+		logService.Error("failed to connect database")
 	}
 	db.SingularTable(true)
 

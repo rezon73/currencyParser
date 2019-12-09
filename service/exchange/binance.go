@@ -4,11 +4,11 @@ import (
 	"currencyParser/cache"
 	"currencyParser/entity"
 	"currencyParser/service/config"
+	"currencyParser/service/logService"
 	"encoding/json"
 	"errors"
 	"github.com/jinzhu/gorm"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 )
@@ -34,6 +34,8 @@ func (exchange BinanceExchange) GetExchangePrice(symbol string) (float64, error)
 	cacheKey := "getQuote" + url
 	body, cacheErr := cache.Get(cacheKey)
 
+	var inetErr error
+
 	if cacheErr != nil || len(body) == 0 {
 		request, _ := http.NewRequest("GET", url, nil)
 		request.Header.Add("cache-control", "no-cache")
@@ -42,11 +44,15 @@ func (exchange BinanceExchange) GetExchangePrice(symbol string) (float64, error)
 		responseRaw, _ := http.DefaultClient.Do(request)
 
 		defer responseRaw.Body.Close()
-		body, _ = ioutil.ReadAll(responseRaw.Body)
+		body, inetErr = ioutil.ReadAll(responseRaw.Body)
+
+		if inetErr != nil {
+			logService.Error(inetErr)
+		}
 
 		cacheErr = cache.Set(cacheKey, body, 5)
 		if cacheErr != nil {
-			log.Println(cacheErr)
+			logService.Warn(cacheErr)
 		}
 	}
 

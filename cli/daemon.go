@@ -3,12 +3,13 @@ package main
 import (
 	"currencyParser/command"
 	"currencyParser/service/config"
+	"currencyParser/service/logService"
 	"currencyParser/service/mainDatabase"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"log"
 	"os"
 	"os/signal"
 	"strconv"
+	"strings"
 	"syscall"
 	"time"
 )
@@ -17,25 +18,28 @@ func main() {
 	defer mainDatabase.Close()
 
 	if len(os.Args) <= 1 {
-		panic("set command name")
+		logService.Fatal("set command name")
 	}
 
 	commandName := os.Args[1]
 	if commandName == "" {
-		panic("set command name")
+		logService.Fatal("set command name")
 	}
 
+	logService.SetJobName("daemon-" + strings.ReplaceAll(strings.Join(os.Args[1:], "_"), "-", ""))
+
+	logService.Info("Start signal")
 
 	command.ArgumentUtil{}.ExceptArgument(&os.Args, 1)
 
 	var interval int
 	intervalString, err := command.ArgumentUtil{}.GetFlag("interval")
 	if err != nil {
-		panic(err)
+		logService.Fatal(err)
 	}
 	interval, err = strconv.Atoi(intervalString)
 	if interval == 0 {
-		panic("Set interval")
+		logService.Fatal("Set interval")
 	}
 
 	comm := command.Factory{
@@ -57,7 +61,7 @@ LOOP:
 			time.Sleep(time.Duration(interval) * time.Second)
 			err = comm.Exec()
 			if err != nil {
-				panic(err)
+				logService.Error(err)
 			}
 		}
 
@@ -65,7 +69,7 @@ LOOP:
 }
 
 func handleDaemonShutDown(signalChan chan os.Signal) {
-	log.Print("Caught signal", map[string]interface{}{
+	logService.Info("Caught signal", map[string]interface{}{
 		"signal":    signalChan,
 		"operation": "terminating service",
 	})

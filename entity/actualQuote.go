@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"currencyParser/service/mainDatabase"
 	"time"
 )
 
@@ -15,12 +16,9 @@ type ActualQuote struct {
 const EXCHANGE_ID_BINANCE int = 1;
 const EXCHANGE_ID_EXMO    int = 2;
 
-/*current := time.Now().UTC()
+func (quote *ActualQuote) GetSymbol() Symbol {
+	var symbol Symbol
+	mainDatabase.GetInstance(0).Find(&symbol, "id = ?", quote.SymbolId)
 
-if registerTimestamp > 0 {
-current = time.Unix(registerTimestamp, 0)
+	return symbol
 }
-
-if loc != nil {
-current = current.In(loc)
-}*/
